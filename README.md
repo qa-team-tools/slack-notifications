@@ -1,5 +1,11 @@
 # Slack notifications
 
+## Installation
+
+```bash
+pip install slack-notifications
+```
+
 ## Simple usage
 
 ```python
