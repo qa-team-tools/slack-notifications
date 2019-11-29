@@ -6,6 +6,7 @@
 pip install slack-notifications
 ```
 
+
 ## Simple usage
 
 ```python
@@ -43,6 +44,8 @@ attachment = Attachment(
 send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
 ```
 
+See program api
+
 
 ## Attachment fields
 
@@ -55,24 +58,28 @@ from slack_notifications import send_notify, Attachment, AttachmentField
 os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
 
 
-field = AttachmentField(
-    title='Field title',
-    value='Field value',
-)
-
 attachment = Attachment(
     title='Attachment title',
     pretext='Attachment pretext',
     text='Attachment text',
     footer='Attachment footer',
-    fields=[field],
+    fields=[
+        Attachment.Field(
+            title='Field title',
+            value='Field value',
+        ),
+    ],
     color='green',
 )
 
 send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
 ```
 
-## Init attachment color
+
+## 
+
+
+## Init color
 
 ```python
 from slack_notifications import init_color
@@ -80,6 +87,7 @@ from slack_notifications import init_color
 
 init_color('green', '#008000')
 ```
+
 
 ## Call slack resource
 
@@ -111,6 +119,7 @@ for user in resource_iterator(Resource('users.list', 'GET'), 'members'):
     pass
 ```
 
+
 ## Raise exception if error was given
 
 ```python
@@ -126,27 +135,106 @@ send_notify('channel-name', username='Bot', text='@channel This is test message'
 ```
 
 
-# Objects
+# Program API
 
-## AttachmentField
+## send_notify
 
-* title=None
-* value=None
-* short=False
+* channel
+* text: str = None
+* username: str = None
+* icon_url: str = None
+* icon_emoji: str = None
+* link_names: bool = True
+* raise_exc: bool = False
+* attachments: List[Attachment] = None
+* blocks: List[BaseBlock] = None
+
+
+## call_resource
+
+* resource: Resource
+* raise_exc: bool = False
+* **kwargs (requests lib options)
+
+
+## resource_iterator
+
+* resource: Resource
+* from_key: str
+* cursor: str = None
+* raise_exc: bool = False
+* limit: int = DEFAULT_RECORDS_LIMIT
+
+
+## init_color
+
+* name: str
+* code: str
+
 
 ## Attachment
 
-* image_url=None,
-* thumb_url=None,
-* author_name=None,
-* author_link=None,
-* author_icon=None,
-* title=None,
-* title_link=None,
-* text=None,
-* pretext=None,
-* footer=None,
-* footer_icon=None,
-* timestamp=None,
-* fields: List[AttachmentField] = None,
-* color=None
+* image_url: str = None,
+* thumb_url: str = None,
+* author_name: str = None,
+* author_link: str = None,
+* author_icon: str = None,
+* title: str = None,
+* title_link: str = None,
+* text: str = None,
+* pretext: str = None,
+* footer: str = None,
+* footer_icon: str = None,
+* timestamp: str = None,
+* fields: List[Attachment.Field] = None,
+* color: str = None
+
+### Attachment.Field
+
+* title: str = None
+* value: str = None
+* short: bool = False
+
+
+## SimpleTextBlock
+
+* text: str
+* mrkdwn: bool = True
+* block_id: str = None
+* fields: List[SimpleTextBlock.Field] = None
+
+### SimpleTextBlock.Field
+
+* text: str
+* emoji: bool = False
+* mrkdwn: bool = True
+
+
+## DividerBlock
+
+* block_id: str = None
+
+
+## ImageBlock
+
+* image_url: str
+* title: str = None
+* alt_text: str = None
+* mrkdwn: bool = True
+* block_id: str = None
+
+
+## ContextBlock
+
+* elements: List[Union[ContextBlock.TextElement, ContextBlock.ImageElement]]
+
+### ContextBlock.TextElement
+
+* text: str
+* mrkdwn: bool = True
+
+
+### ContextBlock.ImageElement
+
+* image_url: str
+* alt_text: str = None
