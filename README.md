@@ -44,7 +44,7 @@ attachment = Attachment(
 send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
 ```
 
-See program api
+See program API
 
 
 ## Attachment fields
@@ -76,7 +76,34 @@ send_notify('channel-name', username='Bot', text='@channel This is test message'
 ```
 
 
-## 
+## Simple Text Block
+
+```python
+import os
+
+from slack_notifications import send_notify, SimpleTextBlock
+
+
+os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+
+
+block = SimpleTextBlock(
+    'Text example',
+    fields=[
+        SimpleTextBlock.Field(
+            'Text field',
+        ),
+        SimpleTextBlock.Field(
+            'Text field',
+            emoji=True,
+        ),
+    ],
+)
+
+send_notify('channel-name', username='Bot', text='@channel This is test message', blocks=[block])
+```
+
+See program API
 
 
 ## Init color
