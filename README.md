@@ -254,7 +254,6 @@ send_notify('channel-name', username='Bot', text='@channel This is test message'
 ## ContextBlock
 
 * elements: List[Union[ContextBlock.TextElement, ContextBlock.ImageElement]]
-* mrkdwn: bool = True
 * block_id: str = None
 
 ### ContextBlock.TextElement
