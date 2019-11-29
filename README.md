@@ -52,7 +52,7 @@ See program API
 ```python
 import os
 
-from slack_notifications import send_notify, Attachment, AttachmentField
+from slack_notifications import send_notify, Attachment
 
 
 os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
