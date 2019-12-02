@@ -243,11 +243,13 @@ class SimpleTextBlockField(BaseBlockField):
         self.emoji = emoji
 
     def to_dict(self):
-        return {
-            'type': self.content_type,
-            'emoji': self.emoji,
-            'text': self.text,
-        }
+        data = super(SimpleTextBlockField, self).to_dict()
+
+        data['text'] = self.text
+        data['emoji'] = self.emoji
+        data['type'] = self.content_type
+
+        return data
 
 
 class SimpleTextBlock(BaseBlock):
@@ -291,7 +293,7 @@ class ImageBlock(BaseBlock):
         self.image_url = image_url
 
         self.title = title
-        self.alt_text = alt_text
+        self.alt_text = alt_text or image_url
 
     def to_dict(self):
         data = super(ImageBlock, self).to_dict()
@@ -393,6 +395,7 @@ def call_resource(resource: Resource, *, raise_exc: bool = False, **kwargs):
         json = response.json()
 
         if not json['ok']:
+            logger.error(response.content)
             raise SlackError(response=response)
 
     return response
