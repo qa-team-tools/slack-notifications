@@ -389,8 +389,6 @@ def call_resource(resource: Resource, *, raise_exc: bool = False, **kwargs):
 
     response = requests.request(resource.method, url, **kwargs)
 
-    logger.info(response.content)
-
     if raise_exc:
         response.raise_for_status()
 
