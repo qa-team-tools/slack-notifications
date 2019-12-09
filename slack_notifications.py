@@ -236,7 +236,7 @@ class BaseBlockField(DictConvertibleObject):
 
 class SimpleTextBlockField(BaseBlockField):
 
-    def __init__(self, text: str, *, emoji: bool = False, **kwargs):
+    def __init__(self, text: str, *, emoji: bool = None, **kwargs):
         super(SimpleTextBlockField, self).__init__(**kwargs)
 
         self.text = text
@@ -246,8 +246,10 @@ class SimpleTextBlockField(BaseBlockField):
         data = super(SimpleTextBlockField, self).to_dict()
 
         data['text'] = self.text
-        data['emoji'] = self.emoji
         data['type'] = self.content_type
+
+        if self.emoji is not None:
+            data['emoji'] = self.emoji
 
         return data
 
