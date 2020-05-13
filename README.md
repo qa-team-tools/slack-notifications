@@ -12,13 +12,13 @@ pip install slack-notifications
 ```python
 import os
 
-from slack_notifications import send_notify
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-send_notify('channel-name', username='Bot', text='@channel This is test message')
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message')
 ```
 
 
@@ -27,13 +27,13 @@ send_notify('channel-name', username='Bot', text='@channel This is test message'
 ```python
 import os
 
-from slack_notifications import send_notify, Attachment
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-attachment = Attachment(
+attachment = slack.Attachment(
     title='Attachment title',
     pretext='Attachment pretext',
     text='Attachment text',
@@ -41,7 +41,7 @@ attachment = Attachment(
     color='green',
 )
 
-send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
 ```
 
 See program API
@@ -50,15 +50,13 @@ See program API
 ## Attachment fields
 
 ```python
-import os
-
-from slack_notifications import send_notify, Attachment
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-attachment = Attachment(
+attachment = slack.Attachment(
     title='Attachment title',
     pretext='Attachment pretext',
     text='Attachment text',
@@ -72,22 +70,20 @@ attachment = Attachment(
     color='green',
 )
 
-send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message', attachments=[attachment])
 ```
 
 
 ## Simple Text Block
 
 ```python
-import os
-
-from slack_notifications import send_notify, SimpleTextBlock
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-block = SimpleTextBlock(
+block = slack.SimpleTextBlock(
     'Text example',
     fields=[
         SimpleTextBlock.Field(
@@ -100,7 +96,7 @@ block = SimpleTextBlock(
     ],
 )
 
-send_notify('channel-name', username='Bot', text='@channel This is test message', blocks=[block])
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message', blocks=[block])
 ```
 
 See program API
@@ -109,40 +105,36 @@ See program API
 ## Init color
 
 ```python
-from slack_notifications import init_color
+import slack_notifications as slack
 
 
-init_color('green', '#008000')
+slack.init_color('green', '#008000')
 ```
 
 
 ## Call slack resource
 
 ```python
-import os
-
-from slack_notifications import call_resource, Resource
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-response = call_resource(Resource('users.info', 'GET'), params={'user': 'W1234567890'})
+response = slack.call_resource(slack.Resource('users.info', 'GET'), params={'user': 'W1234567890'})
 ```
 
 
 ## Resource iterator
 
 ```python
-import os
-
-from slack_notifications import resource_iterator, Resource
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-for user in resource_iterator(Resource('users.list', 'GET'), 'members'):
+for user in slack.resource_iterator(slack.Resource('users.list', 'GET'), 'members'):
     pass
 ```
 
@@ -150,15 +142,13 @@ for user in resource_iterator(Resource('users.list', 'GET'), 'members'):
 ## Raise exception if error was given
 
 ```python
-import os
-
-from slack_notifications import send_notify
+import slack_notifications as slack
 
 
-os.environ['SLACK_ACCESS_TOKEN'] = 'xxx'
+slack.ACCESS_TOKEN = 'xxx'
 
 
-send_notify('channel-name', username='Bot', text='@channel This is test message', raise_exc=True)
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message', raise_exc=True)
 ```
 
 
