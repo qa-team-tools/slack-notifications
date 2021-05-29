@@ -16,7 +16,7 @@ setup(
     long_description=long_description,
     author='Mikhail Trifonov',
     author_email='trifonov.net@gmail.com',
-    url='https://github.com/oztqa/slack_notifications',
+    url='https://github.com/oztqa/slack-notifications',
     py_modules=['slack_notifications'],
     install_requires=[
         'requests',
