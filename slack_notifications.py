@@ -437,7 +437,8 @@ class Slack(requests.Session):
                     link_names: bool = True,
                     raise_exc: bool = False,
                     attachments: List[Attachment] = None,
-                    blocks: List[BaseBlock] = None):
+                    blocks: List[BaseBlock] = None,
+                    thread_ts: str = None):
         data = {
             'channel': channel,
             'link_names': link_names,
@@ -464,6 +465,9 @@ class Slack(requests.Session):
 
         if attachments:
             data['attachments'] = [a.to_dict() for a in attachments]
+
+        if thread_ts:
+            data['thread_ts'] = thread_ts
 
         return self.call_resource(Resource('chat.postMessage', 'POST'), raise_exc=raise_exc, json=data)
 
