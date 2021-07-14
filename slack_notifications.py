@@ -6,7 +6,6 @@ import requests
 
 logger = logging.getLogger(__name__)
 
-
 ACCESS_TOKEN = None
 ACCESS_TOKEN_ENV_NAME = 'SLACK_ACCESS_TOKEN'
 
@@ -82,7 +81,6 @@ class AttachmentField(DictConvertibleObject):
 
 
 class Attachment(DictConvertibleObject):
-
     Field = AttachmentField
 
     def __init__(self, *,
@@ -186,7 +184,6 @@ class Attachment(DictConvertibleObject):
 
 
 class BaseBlock(DictConvertibleObject):
-
     __type__ = None
 
     def __init__(self, *, mrkdwn: bool = True, block_id: str = None):
@@ -208,7 +205,6 @@ class BaseBlock(DictConvertibleObject):
 
 
 class BaseBlockField(DictConvertibleObject):
-
     __type__ = None
 
     def __init__(self, *, mrkdwn=True):
@@ -224,6 +220,26 @@ class BaseBlockField(DictConvertibleObject):
             }
 
         return {}
+
+
+class HeaderBlock(BaseBlock):
+    __type__ = 'header'
+
+    def __init__(self, text: str, **kwargs):
+        kwargs['mrkdwn'] = False
+        super().__init__(**kwargs)
+
+        self.text = text
+
+    def to_dict(self):
+        data = super().to_dict()
+
+        data['text'] = {
+            'type': self.content_type,
+            'text': self.text,
+        }
+
+        return data
 
 
 class SimpleTextBlockField(BaseBlockField):
@@ -247,7 +263,6 @@ class SimpleTextBlockField(BaseBlockField):
 
 
 class SimpleTextBlock(BaseBlock):
-
     __type__ = 'section'
 
     Field = SimpleTextBlockField
@@ -273,12 +288,10 @@ class SimpleTextBlock(BaseBlock):
 
 
 class DividerBlock(BaseBlock):
-
     __type__ = 'divider'
 
 
 class ImageBlock(BaseBlock):
-
     __type__ = 'image'
 
     def __init__(self, image_url, *, title: str = None, alt_text: str = None, **kwargs):
@@ -323,7 +336,6 @@ class ContextBlockTextElement(BaseBlockField):
 
 
 class ContextBlockImageElement(BaseBlockField):
-
     __type__ = 'image'
 
     def __init__(self, image_url, alt_text: str = None):
@@ -344,7 +356,6 @@ class ContextBlockImageElement(BaseBlockField):
 
 
 class ContextBlock(BaseBlock):
-
     __type__ = 'context'
 
     TextElement = ContextBlockTextElement
