@@ -402,9 +402,33 @@ class Message:
     def _lock_thread(self):
         self.__lock_thread = True
 
+    def add_reaction(self, name, raise_exc=False):
+        json = self._response.json()
+        data = {
+            'name': name,
+            'channel': json['channel'],
+            'timestamp': json['message']['ts'],
+        }
+        return self._client.call_resource(
+            Resource('reactions.add', 'POST'),
+            json=data, raise_exc=raise_exc,
+        )
+
+    def remove_reaction(self, name, raise_exc=False):
+        json = self._response.json()
+        data = {
+            'name': name,
+            'channel': json['channel'],
+            'timestamp': json['message']['ts'],
+        }
+        return self._client.call_resource(
+            Resource('reactions.remove', 'POST'),
+            json=data, raise_exc=raise_exc,
+        )
+
     def send_to_thread(self, **kwargs):
         if self.__lock_thread:
-            raise PermissionError('Cannot open thread for thread message')
+            raise SlackError('Cannot open thread for thread message')
 
         json = self._response.json()
         thread_ts = json['message']['ts']
@@ -419,11 +443,9 @@ class Message:
 
     def update(self):
         json = self._response.json()
-        thread_ts = json['message']['ts']
-
         data = {
             'channel': json['channel'],
-            'thread_ts': thread_ts,
+            'thread_ts': json['message']['ts'],
         }
 
         if self.text:
@@ -435,7 +457,21 @@ class Message:
         if self.attachments:
             data['attachments'] = [a.to_dict() for a in self.attachments]
 
-        return self._client.call_resource(Resource('chat.update', 'POST'), raise_exc=self._raise_exc, json=data)
+        return self._client.call_resource(
+            Resource('chat.update', 'POST'),
+            json=data, raise_exc=self._raise_exc,
+        )
+
+    def delete(self):
+        json = self._response.json()
+        data = {
+            'channel': json['channel'],
+            'ts': json['message']['ts'],
+        }
+        return self._client.call_resource(
+            Resource('chat.update', 'POST'),
+            json=data, raise_exc=self._raise_exc,
+        )
 
 
 class Slack(requests.Session):
