@@ -378,6 +378,66 @@ def init_color(name, code):
     COLOR_MAP[name] = code
 
 
+class Message:
+
+    def __init__(self, client, response,
+                 text: str = None,
+                 raise_exc=False,
+                 attachments: List[Attachment] = None,
+                 blocks: List[BaseBlock] = None):
+        self._client = client
+        self._response = response
+        self._raise_exc = raise_exc
+
+        self.text = text
+        self.attachments = attachments
+        self.blocks = blocks
+
+        self.__lock_thread = False
+
+    @property
+    def response(self):
+        return self._response
+
+    def _lock_thread(self):
+        self.__lock_thread = True
+
+    def send_to_thread(self, **kwargs):
+        if self.__lock_thread:
+            raise PermissionError('Cannot open thread for thread message')
+
+        json = self._response.json()
+        thread_ts = json['message']['ts']
+        kwargs.update(thread_ts=thread_ts)
+
+        message = self._client.send_notify(json['channel'], **kwargs)
+
+        lock_thread = getattr(message, '_lock_thread')
+        lock_thread()
+
+        return message
+
+    def update(self):
+        json = self._response.json()
+        thread_ts = json['message']['ts']
+
+        data = {
+            'channel': json['channel'],
+            'thread_ts': thread_ts,
+        }
+
+        if self.text:
+            data['text'] = self.text
+
+        if self.blocks:
+            data['blocks'] = [b.to_dict() for b in self.blocks]
+
+        if self.attachments:
+            data['attachments'] = [a.to_dict() for a in self.attachments]
+
+        return self._client.call_resource(Resource('chat.update', 'POST'), raise_exc=self._raise_exc, json=data)
+
+
 class Slack(requests.Session):
     API_URL = 'https://slack.com/api'
 
@@ -480,7 +540,10 @@ class Slack(requests.Session):
         if thread_ts:
             data['thread_ts'] = thread_ts
 
-        return self.call_resource(Resource('chat.postMessage', 'POST'), raise_exc=raise_exc, json=data)
+        response = self.call_resource(
+            Resource('chat.postMessage', 'POST'), raise_exc=raise_exc, json=data,
+        )
+        return Message(self, response, text=text, raise_exc=raise_exc, blocks=blocks, attachments=attachments)
 
 
 def call_resource(*args, **kwargs):
