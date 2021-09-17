@@ -52,7 +52,7 @@ class DictConvertibleObject:
 
     def to_dict(self):
         raise NotImplementedError(
-            f'Object "{self.__class__.__name__}" does not implemented "to_dict" method',
+            'Object "{}" does not implemented "to_dict" method'.format(self.__class__.__name__),
         )
 
 
@@ -483,19 +483,19 @@ class Slack(requests.Session):
     def __init__(self, token):
         super(Slack, self).__init__()
 
-        self.headers['Authorization'] = f'Bearer {token}'
+        self.headers['Authorization'] = 'Bearer {}'.format(token)
         self.headers['Content-Type'] = 'application/json; charset=utf-8'
 
     @classmethod
     def from_env(cls):
         token = ACCESS_TOKEN or os.getenv(ACCESS_TOKEN_ENV_NAME)
-        assert token is not None, f'Please export "{ACCESS_TOKEN_ENV_NAME}" environment variable'
+        assert token is not None, 'Please export "{}" environment variable'.format(ACCESS_TOKEN_ENV_NAME)
         return cls(token)
 
     def call_resource(self, resource: Resource, *, raise_exc: bool = False, **kwargs):
         kwargs.setdefault('timeout', self.DEFAULT_REQUEST_TIMEOUT)
 
-        url = f'{self.API_URL}/{resource.handle}'
+        url = '{}/{}'.format(self.API_URL, resource.handle)
         response = self.request(resource.method, url, **kwargs)
 
         logger.debug(response.content)
