@@ -1,4 +1,6 @@
 import os
+import string
+import random
 import logging
 from typing import List, Union
 
@@ -32,6 +34,11 @@ COLOR_MAP = {
     'navy': '#000080',
     'sienna': '#A0522D',
 }
+
+
+def _random_string(length):
+    letters = string.ascii_lowercase
+    return ''.join(random.choice(letters) for i in range(length))
 
 
 class SlackError(requests.exceptions.RequestException):
@@ -475,6 +482,11 @@ class Message:
             json=data, raise_exc=self._raise_exc,
         )
 
+    def upload_file(self, file, **kwargs):
+        json = self._response.json()
+        kwargs.update(thread_ts=json['message']['ts'])
+        return self._client.upload_file(json['channel'], file, **kwargs)
+
 
 class Slack(requests.Session):
     API_URL = 'https://slack.com/api'
@@ -536,6 +548,40 @@ class Slack(requests.Session):
                 resource, from_key,
                 limit=limit or self.DEFAULT_RECORDS_LIMIT, cursor=cursor, raise_exc=raise_exc,
             )
+
+    def upload_file(self,
+                    channel, file, *,
+                    title: str = None,
+                    content: str = None,
+                    filename: str = None,
+                    thread_ts: str = None,
+                    filetype: str = 'text'):
+        data = {
+            'channels': channel,
+            'filetype': filetype,
+        }
+        if isinstance(file, str) and content:
+            filename = file
+            data.update(content=content, filename=filename)
+        elif isinstance(file, str) and not content:
+            data.update(filename=os.path.basename(file))
+            with open(file, 'r') as f:
+                data.update(content=f.read())
+        else:
+            data.update(content=file.read(), filename=filename or _random_string(7))
+
+        if title:
+            data.update(title=title)
+        if thread_ts:
+            data.update(thread_ts=thread_ts)
+
+        return self.call_resource(
+            Resource('files.upload', 'POST'),
+            data=data,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+        )
 
     def send_notify(self,
                     channel, *,
