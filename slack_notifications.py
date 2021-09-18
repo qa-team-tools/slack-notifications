@@ -179,6 +179,8 @@ class Attachment(DictConvertibleObject):
 
         if self.fields:
             data['fields'] = [f.to_dict() for f in self.fields]
+            if self.mrkdwn:
+                data['mrkdwn_in'].append('fields')
 
         return data
 
