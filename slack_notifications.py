@@ -392,8 +392,8 @@ class Message:
         self._raise_exc = raise_exc
 
         self.text = text
-        self.attachments = attachments
-        self.blocks = blocks
+        self.attachments = attachments or []
+        self.blocks = blocks or []
 
         self.__lock_thread = False
 
