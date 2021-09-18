@@ -447,7 +447,7 @@ class Message:
         json = self._response.json()
         data = {
             'channel': json['channel'],
-            'thread_ts': json['message']['ts'],
+            'ts': json['message']['ts'],
         }
 
         if self.text:
