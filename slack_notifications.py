@@ -555,7 +555,8 @@ class Slack(requests.Session):
                     content: str = None,
                     filename: str = None,
                     thread_ts: str = None,
-                    filetype: str = 'text'):
+                    filetype: str = 'text',
+                    raise_exc: bool = False):
         data = {
             'channels': channel,
             'filetype': filetype,
@@ -578,6 +579,7 @@ class Slack(requests.Session):
         return self.call_resource(
             Resource('files.upload', 'POST'),
             data=data,
+            raise_exc=raise_exc,
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded',
             },
