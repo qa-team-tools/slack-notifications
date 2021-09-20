@@ -21,6 +21,46 @@ slack.ACCESS_TOKEN = 'xxx'
 slack.send_notify('channel-name', username='Bot', text='@channel This is test message')
 ```
 
+or
+
+```python
+import os
+
+from slack_notifications import Slack
+
+slack = Slack('<token>')
+slack.send_notify('channel-name', username='Bot', text='@channel This is test message')
+```
+
+## Message
+
+```python
+import os
+
+from slack_notifications import Slack, Attachment
+
+slack = Slack('<token>')
+message = slack.send_notify('channel-name', username='Bot', text='@channel This is test message')
+
+message.text = 'This is test message'
+message.update()
+
+message.add_reaction('<name>')
+message.remove_reaction('<name>')
+
+message.upload_file('./test.yml', filetype='yaml')
+
+message.attachments.append(
+    Attachment(
+        title='Attachment title',
+        pretext='Attachment pretext',
+        text='Attachment text',
+        footer='Attachment footer',
+        color='green',
+    ),
+)
+message.update()
+```
 
 ## Use attachments
 
@@ -62,7 +102,7 @@ attachment = slack.Attachment(
     text='Attachment text',
     footer='Attachment footer',
     fields=[
-        Attachment.Field(
+        slack.Attachment.Field(
             title='Field title',
             value='Field value',
         ),
@@ -86,10 +126,10 @@ slack.ACCESS_TOKEN = 'xxx'
 block = slack.SimpleTextBlock(
     'Text example',
     fields=[
-        SimpleTextBlock.Field(
+        slack.SimpleTextBlock.Field(
             'Text field',
         ),
-        SimpleTextBlock.Field(
+        slack.SimpleTextBlock.Field(
             'Text field',
             emoji=True,
         ),
@@ -100,7 +140,6 @@ slack.send_notify('channel-name', username='Bot', text='@channel This is test me
 ```
 
 See program API
-
 
 ## Init color
 
@@ -166,6 +205,16 @@ slack.send_notify('channel-name', username='Bot', text='@channel This is test me
 * attachments: List[Attachment] = None
 * blocks: List[BaseBlock] = None
 
+## upload_file
+
+* channel
+* file
+* title: str = None,
+* content: str = None,
+* filename: str = None,
+* thread_ts: str = None,
+* filetype: str = 'text',
+* raise_exc: bool = False
 
 ## call_resource
 
