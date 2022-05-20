@@ -602,19 +602,16 @@ class Slack(requests.Session):
         }
 
         if username:
-            data['as_user'] = False
             data['username'] = username
-        else:
-            data['as_user'] = True
 
         if text:
             data['mrkdwn'] = True
             data['text'] = text
 
-        if icon_url and not data['as_user']:
+        if icon_url:
             data['icon_url'] = icon_url
 
-        if icon_emoji and not data['as_user']:
+        if icon_emoji:
             data['icon_emoji'] = icon_emoji
 
         if blocks:
