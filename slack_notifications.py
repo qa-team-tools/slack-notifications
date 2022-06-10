@@ -411,7 +411,7 @@ class Slack(requests.Session):
 
             if not json['ok']:
                 logger.error(response.content)
-                raise SlackError(response=response)
+                raise SlackError(response.content)
 
         return response
 
